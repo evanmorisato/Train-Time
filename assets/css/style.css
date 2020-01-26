@@ -1,0 +1,10 @@
+#title {
+    background-color: rgb(112, 47, 17);
+    color: white;
+}
+
+.row-header {
+    background-color: rgb(62, 107, 253);
+    color: white;
+    width: 100%;
+}

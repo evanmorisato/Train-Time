@@ -26,15 +26,16 @@
             }
         }
     </style>
-    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 
 <body class="bg-light">
     <div class="container">
-        <div class="py-5 text-center">
+        <div class="py-5 text-center" id="title">
             <h2>Anytime is Train Time</h2>
             <p class="lead">Choo Choo. Chee Chee.</p>
         </div>
+        <br>
         <div class="row border border-primary rounded">
             <div class="row-header">Current Train Schedule</div>
             <div class="table-responsive">
@@ -53,7 +54,7 @@
                 </table>
             </div>
         </div>
-        <br><br>
+        <br>
 
         <div class="row border border-primary rounded">
             <div class="row-header">Add Train</div>
@@ -78,7 +79,8 @@
                     <div class="row">
                         <div class="col-md-12 mb-3">
                             <label for="first-train-time">First Train Time (HH:mm - Military Time)</label>
-                            <input type="text" class="form-control" id="first-train-time" placeholder="" value="" required>
+                            <input type="text" class="form-control" id="first-train-time" placeholder="" value=""
+                                required>
                             <div class="invalid-feedback">
                                 Valid Train Time is required.
                             </div>
@@ -91,7 +93,9 @@
                             </div>
                         </div>
                     </div>
-                    <button class="btn btn-primary btn-lg btn-block col-md-2" type="submit" id="add-train">Submit</button>
+                    <button class="btn btn-primary btn-lg btn-block col-md-2" type="submit"
+                        id="add-train">Submit</button>
+                    <br>    
             </div>
         </div>
         </form>
@@ -117,117 +121,11 @@
         </script>
     <!-- Link to moment.js-->
     <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
-    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <!-- The core Firebase JS SDK-->
     <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-database.js"></script>
-    <script>
-        // Your web app's Firebase configuration
-        var firebaseConfig = {
-            apiKey: "AIzaSyB37Tq9L4aWfSG6BicPG0APcMjPw7d046w",
-            authDomain: "moreproperties-1fbc2.firebaseapp.com",
-            databaseURL: "https://moreproperties-1fbc2.firebaseio.com",
-            projectId: "moreproperties-1fbc2",
-            storageBucket: "moreproperties-1fbc2.appspot.com",
-            messagingSenderId: "241113120595",
-            appId: "1:241113120595:web:035a24aa59e321df3f2ba6"
-        };
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        var database = firebase.database();
-        function addRow(trainInfo) {
-            let today = moment();
-            let startTime = moment(trainInfo.startTime, "HH:mm");
-            console.log("START TIME: " + startTime);
-            let startTimeConverted = moment(startTime, "HH:mm").subtract(1, "years");
-            console.log("START TIME CONVERTED: " + startTimeConverted);
-            let frequency = trainInfo.frequency;
-            let diffTime = today.diff(moment(startTimeConverted), "minutes");
-            console.log("DIFFERENCE IN TIME: " + diffTime);
-            let remainder = diffTime % frequency;
-            console.log("REMAINDER: " + remainder);
-            let minsLeft = frequency - remainder;
-            console.log("MINUTES TILL TRAIN: " + minsLeft);
-            //console.log(moment().format("DD/MM/YY hh:mm A"));
-            let nextArrival = today.add(minsLeft, 'minutes').format("hh:mm A");
-            console.log("NEXT ARRIVAL: " + nextArrival);
-            //Display array of information
-            console.log(trainInfo);
-            
-            
-            
-            
-            let newRow = $("<tr>").attr("id", "tr-" + trainInfo.key);
-            let newNameTd = $("<td>").attr("data-type", "name");
-            newNameTd.append($("<span>").addClass("span-edit").text(trainInfo.name));
-            newRow.append(newNameTd);
-            let newdestinationTd = $("<td>").attr("data-type", "destination");
-            newdestinationTd.append($("<span>").addClass("span-edit").text(trainInfo.destination));
-            newRow.append(newdestinationTd);
-            let newstartTimeTd = $("<td>").attr("data-type", "startTime");
-            newstartTimeTd.append($("<span>").addClass("span-edit").text(trainInfo.startTime));
-            newRow.append(newdestinationTd);
-            newRow.append($("<td>").text(frequency).addClass("td-frequency"));
-            newRow.append($("<td>").text(moment(nextArrival, "hh:mm A")));
-            newRow.append($("<td>").text(minsLeft));
-            newRow.append($("<button>").text("Delete").attr("data-key", trainInfo.key).addClass("delete-btn"));
-            $("#table-body").append(newRow);
-        }
-        function deleteRow(key) {
-            console.log(key);
-            $("#tr-" + key).remove();
-        }
-        $(document).on("click", ".delete-btn", function () {
-            let key = $(this).attr("data-key");
-            //console.log(key);
-            firebase.database().ref('/trainData/' + key).remove();
-        });
-        $("#add-train").on("click", function (event) {
-            event.preventDefault();
-            let trainInfo = {
-                name: $("#train-name").val().trim(),
-                destination: $("#destination").val().trim(),
-                startTime: $("#first-train-time").val().trim(),
-                frequency: parseInt($("#frequency").val().trim()),
-                dateAdded: firebase.database.ServerValue.TIMESTAMP
-            };
-            //console.log(trainInfo);
-            database.ref("/trainData").push({
-                name: trainInfo.name,
-                destination: trainInfo.destination,
-                startTime: trainInfo.startTime,
-                frequency: trainInfo.frequency,
-                dateAdded: firebase.database.ServerValue.TIMESTAMP
-            }, function (errorObject) {
-                console.log("Errors handled: " + errorObject);
-            });
-            $("#train-name").val("");
-            $("#destination").val("");
-            $("#first-train-time").val("");
-            $("#frequency").val("");
-        });
-        database.ref("/trainData").on('child_added', function (data) {
-            // do things
-            //console.log(data);
-            let trainInfo = {
-                name: data.val().name,
-                destination: data.val().destination,
-                startTime: data.val().startTime,
-                frequency: data.val().frequency,
-                key: data.key
-            };
-            //console.log(trainInfo);
-            addRow(trainInfo);
-        }, function (errorObject) {
-            console.log("Errors handled: " + errorObject);
-        });
-        database.ref("/trainData").on('child_removed', function (data) {
-            // do things
-            console.log(data);
-            deleteRow(data.key);
-        }, function (errorObject) {
-            console.log("Errors handled: " + errorObject);
-        });
-    </script>
+    <script src="assets/javascript/main.js"></script>
+
 </body>
 
 </html>
