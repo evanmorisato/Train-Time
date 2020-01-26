@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Time Activity</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <!-- Favicons -->
+    <meta name="theme-color" content="#563d7c">
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+    <!-- Custom styles for this template -->
+</head>
+
+<body class="bg-light">
+    <div class="container">
+        <div class="py-5 text-center">
+            <h2>Anytime is Train Time</h2>
+            <p class="lead">Choo Choo. Chee Chee.</p>
+        </div>
+        <div class="row border border-primary rounded">
+            <div class="row-header">Current Train Schedule</div>
+            <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                    <thead>
+                        <tr>
+                            <th>Train Name</th>
+                            <th>Destination</th>
+                            <th>Frequency (min)</th>
+                            <th>Next Arrival</th>
+                            <th>Minutes Away</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <br><br>
+
+        <div class="row border border-primary rounded">
+            <div class="row-header">Add Train</div>
+            <div class="col-md-12 order-md-1">
+                <form class="needs-validation" novalidate>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="train-name">Train Name</label>
+                            <input type="text" class="form-control" id="train-name" placeholder="" value="" required>
+                            <div class="invalid-feedback">
+                                Valid Train name is required.
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="destination">Destination</label>
+                            <input type="text" class="form-control" id="destination" placeholder="" value="" required>
+                            <div class="invalid-feedback">
+                                Valid Destination is required.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="first-train-time">First Train Time (HH:mm - Military Time)</label>
+                            <input type="text" class="form-control" id="first-train-time" placeholder="" value="" required>
+                            <div class="invalid-feedback">
+                                Valid Train Time is required.
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="frequency">Frequency (min)</label>
+                            <input type="text" class="form-control" id="frequency" placeholder="" value="" required>
+                            <div class="invalid-feedback">
+                                Valid Frequency is required.
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-lg btn-block col-md-2" type="submit" id="add-train">Submit</button>
+            </div>
+        </div>
+        </form>
+    </div>
+    </div>
+    <footer class="my-5 pt-5 text-muted text-center text-small">
+        <p class="mb-1">&copy; 2017-2019 Company Name</p>
+        <ul class="list-inline">
+            <li class="list-inline-item"><a href="#">Privacy</a></li>
+            <li class="list-inline-item"><a href="#">Terms</a></li>
+            <li class="list-inline-item"><a href="#">Support</a></li>
+        </ul>
+    </footer>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
+        </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
+        </script>
+    <!-- Link to moment.js-->
+    <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-database.js"></script>
+    <script>
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyB37Tq9L4aWfSG6BicPG0APcMjPw7d046w",
+            authDomain: "moreproperties-1fbc2.firebaseapp.com",
+            databaseURL: "https://moreproperties-1fbc2.firebaseio.com",
+            projectId: "moreproperties-1fbc2",
+            storageBucket: "moreproperties-1fbc2.appspot.com",
+            messagingSenderId: "241113120595",
+            appId: "1:241113120595:web:035a24aa59e321df3f2ba6"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        var database = firebase.database();
+        function addRow(trainInfo) {
+            let today = moment();
+            let startTime = moment(trainInfo.startTime);
+            console.log("START TIME: " + startTime);
+            let startTimeConverted = moment(startTime, "HH:mm").subtract(1, "years");
+            console.log("START TIME CONVERTED: " + startTimeConverted);
+            let frequency = trainInfo.frequency;
+            let diffTime = today.diff(moment(startTimeConverted), "minutes");
+            console.log("DIFFERENCE IN TIME: " + diffTime);
+            let remainder = diffTime % frequency;
+            console.log("REMAINDER: " + remainder);
+            let minsLeft = frequency - remainder;
+            console.log("MINUTES TILL TRAIN: " + minsLeft);
+            //console.log(moment().format("DD/MM/YY hh:mm A"));
+            let nextArrival = today.add(minsLeft, 'minutes').format("hh:mm A");
+            console.log("NEXT ARRIVAL: " + nextArrival);
+        
+            console.log(trainInfo);
+            
+            
+            
+            
+            let newRow = $("<tr>").attr("id", "tr-" + trainInfo.key);
+            let newNameTd = $("<td>").attr("data-type", "name");
+            newNameTd.append($("<span>").addClass("span-edit").text(trainInfo.name));
+            newRow.append(newNameTd);
+            let newdestinationTd = $("<td>").attr("data-type", "destination");
+            newdestinationTd.append($("<span>").addClass("span-edit").text(trainInfo.destination));
+            newRow.append(newdestinationTd);
+            let newstartTimeTd = $("<td>").attr("data-type", "startTime");
+            newstartTimeTd.append($("<span>").addClass("span-edit").text(trainInfo.startTime));
+            newRow.append(newdestinationTd);
+            newRow.append($("<td>").text(frequency).addClass("td-frequency"));
+            newRow.append($("<td>").text(moment(nextArrival, "hh:mm A")));
+            newRow.append($("<td>").text(minsLeft));
+            newRow.append($("<button>").text("Delete").attr("data-key", trainInfo.key).addClass("delete-btn"));
+            newRow.append($("<button>").text("Update").attr("data-key", trainInfo.key).addClass("update-btn"));
+            $("#table-body").append(newRow);
+        }
+        function deleteRow(key) {
+            console.log(key);
+            $("#tr-" + key).remove();
+        }
+        $(document).on("click", ".delete-btn", function () {
+            let key = $(this).attr("data-key");
+            //console.log(key);
+            firebase.database().ref('/trainData/' + key).remove();
+        });
+        $(document).on("click", ".update-btn", function () {
+            let key = $(this).attr("data-key");
+            // loop through any inputs and update the DB
+            let row = $(this).parent().parent();
+            let inputs = row.find("input");
+            console.log(inputs);
+            inputs.each(function () {
+                let value = $(this).val();
+                let variableName = $(this).attr("data-type");
+                console.log(key, value, variableName);
+                database.ref("/trainData/" + key).update({
+                    [variableName]: value
+                }, function (errorObject) {
+                    console.log("Errors handled: " + errorObject);
+                });
+                //convert back to spans
+                let newSpan = $("<span>").addClass("span-edit").text(value);
+                $(this).parent().html(newSpan);
+            });
+        });
+        $(document).on("click", ".span-edit", function () {
+            // change the text fields to inputs
+            //console.log($(this).text());
+            let currentText = $(this).text();
+            let variableName = $(this).parent().attr("data-type");
+            let newInput = $("<input>").val(currentText).addClass("inline-input");
+            newInput.attr("data-type", variableName);
+            $(this).parent().html(newInput);
+        });
+        $("#add-train").on("click", function (event) {
+            event.preventDefault();
+            let trainInfo = {
+                name: $("#train-name").val().trim(),
+                destination: $("#destination").val().trim(),
+                startTime: $("#first-train-time").val().trim(),
+                frequency: parseInt($("#frequency").val().trim()),
+                dateAdded: firebase.database.ServerValue.TIMESTAMP
+            };
+            //console.log(trainInfo);
+            database.ref("/trainData").push({
+                name: trainInfo.name,
+                destination: trainInfo.destination,
+                startTime: trainInfo.startTime,
+                frequency: trainInfo.frequency,
+                dateAdded: firebase.database.ServerValue.TIMESTAMP
+            }, function (errorObject) {
+                console.log("Errors handled: " + errorObject);
+            });
+            $("#train-name").val("");
+            $("#destination").val("");
+            $("#first-train-time").val("");
+            $("#frequency").val("");
+        });
+        database.ref("/trainData").on('child_added', function (data) {
+            // do things
+            //console.log(data);
+            let trainInfo = {
+                name: data.val().name,
+                destination: data.val().destination,
+                startTime: data.val().startTime,
+                frequency: data.val().frequency,
+                key: data.key
+            };
+            //console.log(trainInfo);
+            addRow(trainInfo);
+        }, function (errorObject) {
+            console.log("Errors handled: " + errorObject);
+        });
+        database.ref("/trainData").on('child_removed', function (data) {
+            // do things
+            console.log(data);
+            deleteRow(data.key);
+        }, function (errorObject) {
+            console.log("Errors handled: " + errorObject);
+        });
+    </script>
+</body>
+
+</html>
