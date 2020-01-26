@@ -60,14 +60,14 @@
             <div class="col-md-12 order-md-1">
                 <form class="needs-validation" novalidate>
                     <div class="row">
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-12 mb-3">
                             <label for="train-name">Train Name</label>
                             <input type="text" class="form-control" id="train-name" placeholder="" value="" required>
                             <div class="invalid-feedback">
                                 Valid Train name is required.
                             </div>
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-12 mb-3">
                             <label for="destination">Destination</label>
                             <input type="text" class="form-control" id="destination" placeholder="" value="" required>
                             <div class="invalid-feedback">
@@ -76,14 +76,14 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-12 mb-3">
                             <label for="first-train-time">First Train Time (HH:mm - Military Time)</label>
                             <input type="text" class="form-control" id="first-train-time" placeholder="" value="" required>
                             <div class="invalid-feedback">
                                 Valid Train Time is required.
                             </div>
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-12 mb-3">
                             <label for="frequency">Frequency (min)</label>
                             <input type="text" class="form-control" id="frequency" placeholder="" value="" required>
                             <div class="invalid-feedback">
@@ -170,7 +170,6 @@
             newRow.append($("<td>").text(moment(nextArrival, "hh:mm A")));
             newRow.append($("<td>").text(minsLeft));
             newRow.append($("<button>").text("Delete").attr("data-key", trainInfo.key).addClass("delete-btn"));
-            newRow.append($("<button>").text("Update").attr("data-key", trainInfo.key).addClass("update-btn"));
             $("#table-body").append(newRow);
         }
         function deleteRow(key) {
@@ -181,35 +180,6 @@
             let key = $(this).attr("data-key");
             //console.log(key);
             firebase.database().ref('/trainData/' + key).remove();
-        });
-        $(document).on("click", ".update-btn", function () {
-            let key = $(this).attr("data-key");
-            // loop through any inputs and update the DB
-            let row = $(this).parent().parent();
-            let inputs = row.find("input");
-            console.log(inputs);
-            inputs.each(function () {
-                let value = $(this).val();
-                let variableName = $(this).attr("data-type");
-                console.log(key, value, variableName);
-                database.ref("/trainData/" + key).update({
-                    [variableName]: value
-                }, function (errorObject) {
-                    console.log("Errors handled: " + errorObject);
-                });
-                //convert back to spans
-                let newSpan = $("<span>").addClass("span-edit").text(value);
-                $(this).parent().html(newSpan);
-            });
-        });
-        $(document).on("click", ".span-edit", function () {
-            // change the text fields to inputs
-            //console.log($(this).text());
-            let currentText = $(this).text();
-            let variableName = $(this).parent().attr("data-type");
-            let newInput = $("<input>").val(currentText).addClass("inline-input");
-            newInput.attr("data-type", variableName);
-            $(this).parent().html(newInput);
         });
         $("#add-train").on("click", function (event) {
             event.preventDefault();
